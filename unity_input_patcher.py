@@ -10,7 +10,7 @@ from typing import Any, Optional, Tuple
 
 import UnityPy
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 PATCH_DEFAULT = "patch.json"
 FLOAT_EPS = 1e-6
 
@@ -281,15 +281,31 @@ def main() -> int:
 
     ap = argparse.ArgumentParser(prog="UnityInputPatcher", add_help=True)
     ap.add_argument("game_root", nargs="?", default=None)
-    ap.add_argument("--patch", default=PATCH_DEFAULT)
+    ap.add_argument("--patch", default=None)
     args = ap.parse_args()
+
+    # If --patch is omitted, try the default patch.json (CWD first, then exe dir when frozen).
+    patch_arg = args.patch or PATCH_DEFAULT
+
+    if getattr(sys, "frozen", False):
+        cmd = Path(sys.executable).name
+    else:
+        cmd = f"python {Path(__file__).name}"
 
     try:
         root = game_root_from_arg(args.game_root)
-        patch_path = patch_path_from_arg(args.patch)
+        patch_path = patch_path_from_arg(patch_arg)
 
         if not patch_path.exists():
-            return fail(f"Patch file not found ({q(patch_path)}).", code=2)
+            # If user explicitly provided --patch, this is a real error.
+            if args.patch:
+                return fail(f"Patch file not found ({q(patch_path)}).", code=2)
+
+            # Otherwise, show how to run without treating it as a patch failure.
+            print("[UnityInputPatcher] No patch specified (and no patch.json override found in working directory).")
+            print("[UnityInputPatcher] Usage:")
+            print(f'  {cmd} "C:\\Path\\To\\Game" --patch "patches\\<game>\\<patch>.json"')
+            return 2
 
         run(root, patch_path)
         return 0
