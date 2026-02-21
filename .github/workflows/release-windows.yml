@@ -1,0 +1,39 @@
+name: Build Windows release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Build (PyInstaller) + zip
+        run: python tools/build_windows.py --clean
+
+      - name: Compute SHA256
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem -Path dist -Filter "unity-input-patcher-win64-v*.zip" | Select-Object -First 1
+          if (-not $zip) { throw "ZIP not found in dist/" }
+          (Get-FileHash $zip.FullName -Algorithm SHA256).Hash + "  " + $zip.Name | Out-File -Encoding ascii dist/SHA256SUMS.txt
+
+      - name: Create GitHub Release + upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/unity-input-patcher-win64-v*.zip
+            dist/SHA256SUMS.txt
