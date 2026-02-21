@@ -3,12 +3,45 @@ Python utility for modifying Unity’s legacy `InputManager` settings inside `gl
 
 Enables toggling options such as **Invert Y Axis** or adjusting key bindings when those settings are not configurable in-game.
 
+Prebuilt Windows binaries are available under [**Releases**](https://github.com/Daedolon/unity-input-patcher/releases).
+
 ## Compatibility
 Supports Unity **Legacy Input System** only.
 
 Not compatible with the Unity **New Input System**.
 
-## Installation
+## Usage example
+
+### Windows (Recommended)
+
+1. Close the game before patching.
+
+2. Download the latest Win64 build from [**Releases**](https://github.com/Daedolon/unity-input-patcher/releases) and extract the zip.
+
+3. After extracting, ensure the `.exe` and `_internal` folder are together in the same directory.
+
+4. Run:
+
+_Example: Patch E.E.R.I.E with the included **Invert Y Axis** patch_
+
+```
+unity-input-patcher.exe "C:\Program Files (x86)\Steam\steamapps\common\EERIE" --patch "patches\eerie\invert-y.json"
+```
+
+If a `patch.json` exists in the game directory (quick override mode), the tool can be run directly from that directory:
+
+```
+unity-input-patcher.exe
+```
+
+Run again to revert the patch.
+
+Steam **"Verify integrity of game files"** restores the original files if needed.
+
+### Python
+
+**Installation**
+
 ```
 git clone https://github.com/Daedolon/unity-input-patcher.git
 cd unity-input-patcher
@@ -17,24 +50,17 @@ py -m venv .venv
 pip install -r requirements.txt
 ```
 
-## Usage example
-Close the game before patching.
-
-Example: patch E.E.R.I.E with the included “Invert Y axis” patch:
+**Run from source**
 
 ```
-python unity_input_patcher.py "C:\Program Files (x86)\Steam\steamapps\common\EERIE" --patch patches\eerie\invert-y.json
+python unity_input_patcher.py "C:\Program Files (x86)\Steam\steamapps\common\EERIE" --patch "patches\eerie\invert-y.json"
 ```
 
-If a single `patch.json` exists in the game root, the tool can be run directly:
+If a `patch.json` exists in the working directory:
 
 ```
 python unity_input_patcher.py
 ```
-
-Run again to revert the patch.
-
-Steam "Verify integrity of game files" restores originals if required.
 
 ## Custom patch creation
 
