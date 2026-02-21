@@ -4,12 +4,13 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 from pathlib import Path
 from typing import Any, Optional, Tuple
 
 import UnityPy
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 PATCH_DEFAULT = "patch.json"
 FLOAT_EPS = 1e-6
 
@@ -24,10 +25,23 @@ def game_root_from_arg(s: Optional[str]) -> Path:
     return Path(s).resolve() if s else Path.cwd().resolve()
 
 
-# Resolve patch path (absolute, or relative to this script).
+# Resolve patch path (absolute, or relative to CWD; fallback to exe dir when frozen).
 def patch_path_from_arg(s: str) -> Path:
     p = Path(s)
-    return p if p.is_absolute() else (Path(__file__).resolve().parent / p).resolve()
+    if p.is_absolute():
+        return p.resolve()
+
+    cwd_candidate = (Path.cwd() / p).resolve()
+    if cwd_candidate.exists():
+        return cwd_candidate
+
+    if getattr(sys, "frozen", False):
+        exe_dir = Path(sys.executable).resolve().parent
+        exe_candidate = (exe_dir / p).resolve()
+        if exe_candidate.exists():
+            return exe_candidate
+
+    return cwd_candidate
 
 
 # Quote a path for safe copy/paste in Windows cmd.
