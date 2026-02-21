@@ -1,0 +1,16 @@
+{
+  "id": "eerie-invert-y",
+  "name": "E.E.R.I.E - Invert Y Axis",
+  "root_contains": ["E.E.R.I.E_Data"],
+  "file": "E.E.R.I.E_Data/globalgamemanagers",
+  "toggle": [
+    {
+      "type": "legacy_axis_field",
+      "axis": 3,
+      "axis_name": "Mouse Y",
+      "field": "invert",
+      "original": false,
+      "patched": true
+    }
+  ]
+}

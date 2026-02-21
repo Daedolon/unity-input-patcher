@@ -1,0 +1,16 @@
+{
+  "id": "parasocial-invert-y",
+  "name": "Parasocial - Invert Y Axis",
+  "root_contains": ["Parasocial_Data"],
+  "file": "Parasocial_Data/globalgamemanagers",
+  "toggle": [
+    {
+      "type": "legacy_axis_field",
+      "axis": 7,
+      "axis_name": "Mouse Y",
+      "field": "invert",
+      "original": false,
+      "patched": true
+    }
+  ]
+}

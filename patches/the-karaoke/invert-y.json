@@ -1,0 +1,16 @@
+{
+  "id": "the-karaoke-invert-y",
+  "name": "The Karaoke - Invert Y Axis",
+  "root_contains": ["Karaoke_Data"],
+  "file": "Karaoke_Data/globalgamemanagers",
+  "toggle": [
+    {
+      "type": "legacy_axis_field",
+      "axis": 7,
+      "axis_name": "Mouse Y",
+      "field": "invert",
+      "original": false,
+      "patched": true
+    }
+  ]
+}
